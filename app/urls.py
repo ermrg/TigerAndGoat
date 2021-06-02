@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app.views import index
+from app.views import index, multiplayer_offline, multiplayer_online
 
 urlpatterns = [
     path('', index),
+    path('multiplayer-offline', multiplayer_offline, name="multiplayer-offline"),
+    path('multiplayer-online', multiplayer_online, name="multiplayer-online"),
 ]

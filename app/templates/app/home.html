@@ -1,0 +1,86 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        Board
+    </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+
+    <script src="{% static 'app/JQuery3.5.1.min.js' %}"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Luckiest Guy', cursive;
+            background-color: #333;
+
+        }
+
+
+        path {
+            fill: transparent;
+        }
+
+        text {
+            fill: #FF9800;
+        }
+
+        .home-wrapper {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            padding-top: 30px;
+        }
+
+        .info {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 64px;
+            color: #FF9800;
+            position: relative;
+        }
+        .option-wrapper{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="home-wrapper">
+    <div class="info">
+        <div class="title">
+            <div class="first-line"> BAAGCHAAL KO</div>
+            <div class="second-line"> BAADSHAHA</div>
+        </div>
+        <img src="{% static 'app/images/title-background.gif' %}" alt="Baag Chaal Ko Baadhshah"/>
+    </div>
+    <div class="option-wrapper">
+        <div class="option">
+            <div class="option-menu">
+                <div class="menu">
+                    <a href="{% url 'multiplayer-offline' %}">Multiplayer Offline</a>
+                </div>
+            </div>
+            <div class="option-menu">
+                <div class="menu">
+                    <p>Multiplayer OnLine</p>
+                    <div class="sub-menu">
+                        <p>Random Opponent [AI]</p>
+                        <a href="{% url 'multiplayer-online' %}">Challenge Yor Friend</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
