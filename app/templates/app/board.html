@@ -273,6 +273,7 @@
     let goatCount = 20
     let tigerCount = 4
     let eatenScore = 0
+    let maxNoOfGoatEatenToFinishGame = 5
     let LocalAvailablePositions = availablePositions.movePositon
     let LocalFeedPositions = availablePositions.feedPosition
     {#$(document).ready(function () {#}
@@ -400,6 +401,9 @@
         eatenScore++
         console.log(eatenClass, "This Goat Eaten")
         $('.score').html(eatenScore)
+        if(eatenScore >= maxNoOfGoatEatenToFinishGame){
+            alert('Game Over, Tiger Won')
+        }
     }
 
     function switchTurn() {
@@ -456,7 +460,9 @@
         goatPosition = '.' + boxClass[1] + ' .' + goatClass[1]
         if (turn === 'goat') {
             placeGoat(goatPosition)
-            console.log(checkIfTigerCornered(), 'Check Tiger Side')
+            if(checkIfTigerCornered() === 0){
+                alert('Game Over! Goat Won')
+            }
         } else {
             placeTiger(goatPosition)
         }
