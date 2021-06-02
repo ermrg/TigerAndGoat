@@ -1,0 +1,481 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        Board
+    </title>
+    <script src="{% static 'app/availablePositions.js' %}"></script>
+    <script src="{% static 'app/JQuery3.5.1.min.js' %}"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .board-wrapper {
+            height: 100%;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            position: relative;
+        }
+
+        .tiger {
+            height: 35px;
+            width: 35px;
+            background-color: orangered;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            top: -10px;
+            left: -10px;
+            position: absolute;
+        }
+
+        .tiger.selected, .goat.selected {
+            box-shadow: 0px 0px 8px 4px #bbb;
+        }
+
+        .goat {
+            height: 20px;
+            width: 20px;
+            background-color: aquamarine;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: absolute;
+            top: -2px;
+            left: 0px;
+            z-index: 1;
+        }
+
+        .board {
+            display: flex;
+            height: 800px;
+            width: 700px;
+            margin: auto;
+            flex-wrap: wrap;
+        }
+
+        .score {
+            position: absolute;
+            left: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .goatTurn .box {
+            border-color: aquamarine;
+            background-color: #7fffd447 !important;
+        }
+
+        .tigerTurn .box {
+            border-color: red;
+            background-color: #ff00001c !important;
+        }
+
+        .box {
+            height: 25%;
+            width: 24%;
+            border: 1px solid #bbb;
+            position: relative;
+        }
+
+        .box:nth-child(1), .box:nth-child(3), .box:nth-child(6), .box:nth-child(8), .box:nth-child(9), .box:nth-child(14), .box:nth-child(11), .box:nth-child(16) {
+            background: linear-gradient(to top right,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0) calc(50% - 0.8px),
+            #bbb 50%,
+            rgba(0, 0, 0, 0) calc(50% + 0.8px),
+            rgba(0, 0, 0, 0) 100%);
+        }
+
+        .box:nth-child(2), .box:nth-child(4), .box:nth-child(5), .box:nth-child(7), .box:nth-child(10), .box:nth-child(12), .box:nth-child(13), .box:nth-child(15) {
+            background: linear-gradient(to top left,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0) calc(50% - 0.8px),
+            #bbb 50%,
+            rgba(0, 0, 0, 0) calc(50% + 0.8px),
+            rgba(0, 0, 0, 0) 100%);
+        }
+
+        .box .p {
+            height: 16px;
+            width: 16px;
+            background-color: #bbb;
+            border-radius: 50%;
+            position: absolute;
+            font-size: 11px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .box .p:hover {
+            background-color: red;
+            cursor: pointer;
+        }
+
+        .box .p:nth-child(1) {
+            top: -8px;
+            left: -8px;
+        }
+
+        .box .p:nth-child(2) {
+            top: -8px;
+            right: -8px;
+        }
+
+        .box .p:nth-child(3) {
+            bottom: -8px;
+            right: -8px;
+        }
+
+        .box .p:nth-child(4) {
+            bottom: -8px;
+            left: -8px;
+        }
+
+        .box1 > .p2, .box1 > .p3, .box2 > .p2, .box2 > .p3, .box3 > .p2, .box3 > .p3,
+        .box5 > .p2, .box5 > .p3, .box6 > .p2, .box6 > .p3, .box7 > .p2, .box7 > .p3,
+        .box9 > .p2, .box9 > .p3, .box10 > .p2, .box10 > .p3, .box11 > .p2, .box11 > .p3,
+        .box13 > .p2, .box13 > .p3, .box14 > .p2, .box14 > .p3, .box15 > .p2, .box15 > .p3 {
+            right: -10px !important;
+        }
+
+        .box1 > .p4, .box1 > .p3, .box2 > .p4, .box2 > .p3, .box3 > .p4, .box3 > .p3, .box4 > .p4, .box4 > .p3,
+        .box5 > .p4, .box5 > .p3, .box6 > .p4, .box6 > .p3, .box7 > .p4, .box7 > .p3, .box8 > .p4, .box8 > .p3,
+        .box9 > .p4, .box9 > .p3, .box10 > .p4, .box10 > .p3, .box11 > .p4, .box11 > .p3,
+        .box12 > .p3, .box12 > .p4 {
+            bottom: -10px !important;
+        }
+    </style>
+</head>
+<body>
+<div class="score"></div>
+<div class="board-wrapper">
+    <div class="board goatTurn">
+        <div class="box box1">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box2">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box3">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box4">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box5">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box6">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box7">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box8">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box9">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box10">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box11">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box12">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box13">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box14">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box15">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+        <div class="box box16">
+            <div class="p p1"></div>
+            <div class="p p2"></div>
+            <div class="p p3"></div>
+            <div class="p p4"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    let turn = 'goat'
+    let goatCount = 20
+    let tigerCount = 4
+    let eatenScore = 0
+    let LocalAvailablePositions = availablePositions.movePositon
+    let LocalFeedPositions = availablePositions.feedPosition
+    {#$(document).ready(function () {#}
+    {#    let ps = $(document).find('.p')#}
+    {#    ps.map(function () {#}
+    {#        let pClass = ($(this).attr('class'))#}
+    {#        let bClass = ($(this).closest('.box').attr('class'))#}
+    {#        $(this).html(bClass.match(/\d+/) + '|' + pClass.match(/\d+/))#}
+    {#    })#}
+    {# })#}
+    $(document).ready(function () {
+        placeTiger('.box1 .p1')
+        placeTiger('.box4 .p2')
+        placeTiger('.box13 .p4')
+        placeTiger('.box16 .p3')
+    })
+
+    function placeTiger(positionClass) {
+        let selectedTiger = $(document).find('.tiger.selected')
+
+        if (selectedTiger.length) {
+            let selectedTigerClass = $(selectedTiger).closest('.p').attr('class')
+            let selectedTigerBoxClass = $(selectedTiger).closest('.box').attr('class')
+            selectedTigerClass = '.' + selectedTigerBoxClass.split(' ')[1] + ' .' + selectedTigerClass.split(' ')[1]
+            let availabilityCheck = checkAvailableTigerPosition(selectedTigerClass, positionClass)
+            if (availabilityCheck) {
+                let ifAlreadyGoatExit = $(positionClass).find('.goat')
+                let ifAlreadyTigerExit = $(positionClass).find('.tiger')
+                if ($(ifAlreadyGoatExit).length + $(ifAlreadyTigerExit).length === 0) {
+                    let value = $(document).find('.tiger.selected').html()
+                    $(document).find('.tiger.selected').remove()
+                    let t = `<div class="tiger tiger` + value + `">` + value + `</div>`
+                    $(positionClass).append(t)
+                    switchTurn()
+                }
+            } else {
+                console.log('Invalid Move 3')
+            }
+        } else {
+            {# For initial $ tiger#}
+            if (tigerCount > 0) {
+                let t = `<div class="tiger tiger` + tigerCount + `">` + tigerCount + `</div>`
+                $(positionClass).append(t)
+                switchTurn()
+                tigerCount--
+            }
+        }
+    }
+
+    function placeGoat(positionClass) {
+        let selectedGoat = $(document).find('.goat.selected')
+
+        let ifAlreadyGoatExit = $(positionClass).find('.goat')
+        let ifAlreadyTigerExit = $(positionClass).find('.tiger')
+        if ($(ifAlreadyGoatExit).length + $(ifAlreadyTigerExit).length === 0) {
+            if (selectedGoat.length === 0) {
+                if (goatCount > 0) {
+                    let goatClass = 'goat goat' + goatCount
+                    let t = `<div class="${goatClass}">${goatCount}</div>`
+                    $(positionClass).append(t)
+                    switchTurn()
+                    goatCount--
+                }
+            } else {
+                let selectedGoatClass = $(selectedGoat).closest('.p').attr('class')
+                let selectedGoatBoxClass = $(selectedGoat).closest('.box').attr('class')
+                selectedGoatClass = '.' + selectedGoatBoxClass.split(' ')[1] + ' .' + selectedGoatClass.split(' ')[1]
+                let availabilityCheck = checkAvailableGoatPosition(selectedGoatClass, positionClass)
+                if (availabilityCheck) {
+                    let value = $(document).find('.goat.selected').html()
+                    $(document).find('.goat.selected').remove()
+                    let t = `<div class="goat selected">${value}</div>`
+                    $(positionClass).append(t)
+                    switchTurn()
+                } else {
+                    console.log('Invalid Goat Move 1')
+                }
+            }
+        } else {
+            console.log('Invalid Goat Move 2')
+        }
+
+    }
+
+    function checkAvailableGoatPosition(position, target) {
+        let validPositions = LocalAvailablePositions[position]
+        let isValid = validPositions.indexOf(target)
+        return isValid >= 0
+    }
+
+    function checkAvailableTigerPosition(position, target) {
+        let validPositions = LocalAvailablePositions[position]
+        let isValid = validPositions.indexOf(target)
+        if (isValid === -1) {
+            let feedingPositions = LocalFeedPositions[position]
+            let isFeeding = false
+            let eatenGoat = ''
+            feedingPositions.map(function (fp) {
+                if (fp.destination === target) {
+                    let goatExist = $(fp.food).find('.goat')
+                    if (goatExist.length) {
+                        eatenGoat = fp.food
+                        isFeeding = true
+                        return true
+                    } else {
+                        console.log("Invalid Move 1")
+                        return false
+                    }
+                }
+            })
+            if (isFeeding) {
+                handleGoatEaten(eatenGoat)
+                return true
+            } else {
+                console.log("Invalid Move 2")
+                return false
+            }
+        } else {
+            return true
+        }
+    }
+
+    function handleGoatEaten(eatenClass) {
+        $(eatenClass).find('.goat').remove()
+        eatenScore++
+        console.log(eatenClass, "This Goat Eaten")
+        $('.score').html(eatenScore)
+    }
+
+    function switchTurn() {
+        if (turn === 'tiger') {
+            turn = 'goat'
+            $('.board').removeClass('tigerTurn').addClass('goatTurn')
+            $('.tiger').removeClass('selected')
+        } else {
+            turn = 'tiger'
+            $('.board').removeClass('goatTurn').addClass('tigerTurn')
+            $('.goat').removeClass('selected')
+        }
+    }
+
+    function checkIfTigerCornered() {
+        let tigers = $(document).find('.tiger')
+        $(tigers).removeClass('selected')
+        let availablePosition = 0
+        tigers.map(function () {
+
+            let className = $(this).closest('.p').attr('class')
+            let boxClass = $(this).closest('.box').attr('class')
+            let position = '.' + boxClass.split(' ')[1] + ' .' + className.split(' ')[1]
+            let validPositions = LocalAvailablePositions[position]
+            let feedingPositions = LocalFeedPositions[position]
+            validPositions.map(function (p) {
+                let hasFilled = $(p).html().trim()
+                if (hasFilled === '') {
+                    availablePosition++
+                }
+            })
+            feedingPositions.map(function (p, key) {
+                let hasFilled = $(p.destination).html()
+                if (hasFilled.trim() === '') {
+                    let ifGoatExist = $(p.food).find('.goat')
+                    console.log(ifGoatExist)
+                    if (ifGoatExist.length) {
+                        console.log('Feed Position Counted')
+                        availablePosition++
+                    }
+                }
+            })
+        })
+        return availablePosition
+    }
+
+    $(document).on('click', '.p', function () {
+        let box = $(this).closest('.box').first()
+        let boxClass = $(box).attr('class')
+        let goatClass = $(this).attr('class')
+        let goatPosition = '';
+        boxClass = boxClass.split(' ')
+        goatClass = goatClass.split(' ')
+        goatPosition = '.' + boxClass[1] + ' .' + goatClass[1]
+        if (turn === 'goat') {
+            placeGoat(goatPosition)
+            console.log(checkIfTigerCornered(), 'Check Tiger Side')
+        } else {
+            placeTiger(goatPosition)
+        }
+    })
+
+    $(document).on('click', '.goat', function () {
+        if (goatCount === 0 && turn === 'goat') {
+            $('.goat').removeClass('selected')
+            $(this).addClass('selected')
+        }
+    })
+
+    $(document).on('click', '.tiger', function () {
+        if (turn === 'tiger') {
+            $('.tiger').removeClass('selected')
+            $(this).addClass('selected')
+        }
+    })
+
+
+</script>
+</html>
