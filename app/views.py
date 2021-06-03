@@ -7,7 +7,13 @@ def multiplayer_offline(request):
 
 
 def create_online_game(request):
+    # create user here
     return render(request, 'app/create_online_game.html')
+
+
+def invite_friends(request):
+    # create game here
+    return render(request, 'app/invite_friend.html')
 
 
 def multiplayer_online(request):

@@ -67,10 +67,9 @@
         }
 
         .title .create-game {
-            width: 150px;
-            margin: auto;
-            padding: 10px 25px;
-            border-radius: 25px;
+        {#width: 150px;#} margin: auto;
+            padding: 10px 15px;
+            border-radius: 5px;
             text-transform: uppercase;
             font-family: 'Luckiest Guy';
             letter-spacing: 4px;
@@ -88,8 +87,11 @@
     <div class="info">
         <div class="title">
             <div class="second-line"> Your Name</div>
-            <input type="text" value="Baadshaha">
-            <button class="create-game">Create</button>
+            <form action="{% url 'invite_friends' %}" method="post">
+                {% csrf_token %}
+                <input name="name" type="text" value="Baadshaha">
+                <button class="create-game">Create New Game</button>
+            </form>
         </div>
     </div>
 </div>

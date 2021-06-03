@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from app.views import index, multiplayer_offline, multiplayer_online, create_online_game
+from app.views import *
 
 urlpatterns = [
     path('', index),
     path('multiplayer-offline', multiplayer_offline, name="multiplayer-offline"),
     path('multiplayer-online', multiplayer_online, name="multiplayer-online"),
     path('create-online-game', create_online_game, name="create-online-game"),
+    path('invite-friends', invite_friends, name="invite_friends"),
 ]
