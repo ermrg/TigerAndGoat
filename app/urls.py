@@ -20,8 +20,10 @@ from app.views import *
 
 urlpatterns = [
     path('', index),
-    path('multiplayer-offline', multiplayer_offline, name="multiplayer-offline"),
-    path('multiplayer-online', multiplayer_online, name="multiplayer-online"),
-    path('create-online-game', create_online_game, name="create-online-game"),
-    path('invite-friends', invite_friends, name="invite_friends"),
+    path('multiplayer-offline', multiplayer_offline, name="multiplayer_offline"),
+    path('multiplayer-online/<int:code>/<int:user_id>', multiplayer_online, name="multiplayer_online"),
+    path('create-online-game', create_online_game, name="create_online_game"),
+    path('join-online-game', join_online_game, name="join_online_game"),
+    path('game-setup', invite_friends, name="invite_friends"),
+    path('game-setup/<int:code>', invite_friends, name="invite_friends"),
 ]

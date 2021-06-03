@@ -126,15 +126,15 @@
     </div>
     <div class="option-wrapper">
         <div class="menu">
-            <a href="{% url 'multiplayer-offline' %}">Multiplayer Offline</a>
+            <a href="{% url 'multiplayer_offline' %}">Multiplayer Offline</a>
         </div>
 
         <div class="menu">
             <a>Multiplayer OnLine</a>
             <div class="sub-menu menu">
-{#                <a>Random Opponent</a>#}
-                <a href="{% url 'create-online-game' %}">Challenge Your Friend</a>
-                <a>Join Game</a>
+                {#                <a>Random Opponent</a>#}
+                <a href="{% url 'create_online_game' %}">Challenge Your Friend</a>
+                <a href="{% url 'join_online_game' %}">Join Game</a>
             </div>
         </div>
     </div>
@@ -143,5 +143,16 @@
 <script>
     const circleType = new CircleType(document.getElementById('first-line'));
     circleType.radius(180).dir(1);
+</script>
+<script>
+    {#$('#joinGame').click(function () {#}
+    {#    var socket = new WebSocket('ws://localhost:8000/ws/move/')#}
+    {#    socket.onmessage = function (event) {#}
+    {#        var data = JSON.parse(event.data)#}
+    {#        console.log(data.message)#}
+    {#        $('#joinGame').html(data.message)#}
+    {#    }#}
+    {# })#}
+
 </script>
 </html>

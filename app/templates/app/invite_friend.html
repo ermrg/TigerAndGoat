@@ -69,7 +69,7 @@
             font-family: 'Luckiest Guy';
         }
 
-        .title .create-game {
+        .title .start-match {
         {#width: 150px;#} margin: auto;
             padding: 10px 15px;
             border-radius: 5px;
@@ -85,12 +85,11 @@
             margin-top: 20px;
         }
 
-        .create-game.waiting {
-            opacity: 0.5;
-            cursor: wait;
+        .start-match {
+            display: none;
         }
 
-        .friends {
+        .friends, .waiting {
             padding: 20px;
             border-radius: 20px;
             background-color: #fff;
@@ -98,6 +97,10 @@
             border: 1px solid grey;
             margin: 20px 0;
             position: relative;
+        }
+
+        .friends {
+            display: none;
         }
 
         .switch {
@@ -109,7 +112,7 @@
             cursor: pointer;
         }
 
-        .friend .name span {
+        .friend .name .player {
             color: darkslategrey;
         }
 
@@ -121,11 +124,13 @@
             font-size: 12px;
             color: darkslategrey;
         }
-        .share-icons{
+
+        .share-icons {
             display: flex;
             justify-content: center;
         }
-        .share-icon{
+
+        .share-icon {
             margin: 0px 5px;
         }
     </style>
@@ -134,7 +139,7 @@
 <div class="home-wrapper">
     <div class="info">
         <div class="title">
-            <div class="second-line"> Code: 1522</div>
+            <div class="second-line"> Code: {{ game.code }}</div>
             <div class="links">
                 <div class="link">
                     <a href="#">http://127.0.0.1:8000/create-online-game</a>
@@ -152,18 +157,84 @@
                     <div class="thumbnail">
 
                     </div>
-                    <div class="name"><span class="player">Tiger: </span> You</div>
-                    <div class="name"><span class="player">Goat: </span> Baburam</div>
+                    <div class="name-wrapper">
+                        <div class="name"><span class="player player1"> </span> <span class="first-player">You</span>
+                        </div>
+                        <div class="name"><span class="player player2"> </span> <span
+                                class="second-player"></span>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="switch"><i class="fas fa-random"></i> Switch</div>
+                {% if game.creator.id == user_id %}
+                    <div class="switch"><i class="fas fa-random"></i> Switch</div>
+                {% endif %}
 
             </div>
-            <button class="create-game waiting">Start</button>
+            {% if game.creator.id == user_id %}
+                <button class="start-match">Start</button>
+            {% endif %}
+            <div class="waiting">
+                <div class="friend">
+                    <div class="name"><span class="player">Waiting For Friend..</span></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 </body>
 <script>
+    let user_id = '{{ user_id }}'
+    let game_code = '{{ game.code }}'
+    let game = ''
+    console.log('User Id', user_id, ' Creator Id', '{{ game.creator.id }}')
+    let socket = new WebSocket('ws://localhost:8000/ws/game-setup/' + game_code)
+    socket.onopen = function () {
+        console.log('Socket Connected')
+        let data = {
+            'operation_type': 'join_user',
+            'user_id': user_id,
+            'code': game_code
+        }
+        socket.send(JSON.stringify({data}))
+    }
+    socket.onmessage = function (e) {
+        let data = JSON.parse(e.data)
+        data = data['payload']
+        console.log(data)
+        if (data === 'start') {
+            let url_ = '{% url 'multiplayer_online' '0123' '0321' %}'
+            url_ = url_.replace('0123', game_code)
+            window.location.replace(url_)
+        } else {
+            game = data
+            if (data['opponent_id']) {
+                $('.friends').show()
+                $('.start-match').show()
+                $('.waiting').hide()
+                if (data['opponent_id'] === user_id) {
+                    $('.player1').text(data['opponent_role'])
+                    $('.player2').text(data['creator_role'])
+                    $('.first-player').text("You")
+                    $('.second-player').text(data["creator_name"])
+                } else {
+                    $('.player1').text(data['creator_role'])
+                    $('.player2').text(data['opponent_role'])
+                    $('.second-player').text(data['opponent_name'])
+                    $('.first-player').text('You')
+                }
+            }
+        }
 
+    }
+    socket.onclose = function (e) {
+        console.log('Socket Closed')
+    }
+    $('.start-match').click(function () {
+        let data = {
+            'operation_type': 'start',
+        }
+        socket.send(JSON.stringify({data}))
+    })
 </script>
 </html>

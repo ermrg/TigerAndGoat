@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        Board
+    </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+
+    <script src="{% static 'app/JQuery3.5.1.min.js' %}"></script>
+    <script src="{% static 'app/circleType.min.js' %}"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Luckiest Guy', cursive;
+            background-image: url("{% static 'app/images/background.jpg' %}");
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .home-wrapper {
+            height: fit-content;
+            overflow: hidden;
+            padding-top: 30px;
+        }
+
+        .info {
+            text-align: center;
+            width: 360px;
+        }
+
+        .title {
+            font-size: 50px;
+            color: #FF9800;
+            position: relative;
+            margin: auto;
+            text-shadow: 2px 2px 2px #305cfa, 3px 3px 3px #ef961a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .second-line {
+            letter-spacing: 7px;
+            margin-top: 22px;
+        }
+
+        .title input {
+            height: 50px;
+            border: 2px solid #FF9800;
+            padding: 10px;
+            color: #ef961a;
+            font-size: 26px;
+            margin-bottom: 10px;
+            outline: none;
+            border-radius: 40px;
+            text-align: center;
+            font-family: 'Luckiest Guy';
+        }
+
+        .title .create-game {
+        {#width: 150px;#} margin: auto;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-family: 'Luckiest Guy';
+            letter-spacing: 4px;
+            line-height: 33px;
+            border-color: #ef961a;
+            color: #ff6000;
+            outline: none;
+            background: #fffbd7;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="home-wrapper">
+    <div class="info">
+        <div class="title">
+            <div class="second-line"> Your Name</div>
+            <form action="{% url 'invite_friends' %}" method="post">
+                {% csrf_token %}
+                <input name="name" type="text" value="Baadshaha" required>
+                <input name="code" type="text" placeholder="Code" value="{{ code }}" required>
+                <button class="create-game">Join Game</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+</script>
+</html>
