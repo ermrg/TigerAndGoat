@@ -316,21 +316,36 @@
 </body>
 <script>
     let user_id = '{{ user_id }}'
+    let currentUserRole = ''
     let game_code = '{{ game.code }}'
-    let socket = new WebSocket('ws://localhost:8000/ws/play/' + game_code)
+    let creator_id = '{{ game.creator_id }}'
+    let opponent_id = '{{ game.opponent_id }}'
+    let opponent_role = '{{ game.opponent_role }}'
+    let creator_role = '{{ game.creator_role }}'
+    if (user_id === creator_id) {
+        currentUserRole = creator_role
+    } else {
+        currentUserRole = opponent_role
+    }
+    console.log(currentUserRole)
+
+    let socket = new WebSocket('ws://{{ RUNNING_IP }}/ws/play/' + game_code)
     socket.onmessage = function (e) {
         let data = JSON.parse(e.data)
         data = data['payload']
-        console.log(data)
-        if (data['selected']) {
-            if (!$(data['selected']).find('.'+data['turn']).hasClass('selected')) {
-                $(data['selected']).find('.'+data['turn']).addClass('selected')
+        if (data['operation_type'] === 'movement') {
+            if (data['selected']) {
+                if (!$(data['selected']).find('.' + data['turn']).hasClass('selected')) {
+                    $(data['selected']).find('.' + data['turn']).addClass('selected')
+                }
             }
-        }
-        if (data['turn'] === 'tiger') {
-            placeTiger(data['position'])
-        } else {
-            placeGoat(data['position'])
+            if (data['turn'] === 'tiger') {
+                placeTiger(data['position'])
+            } else {
+                placeGoat(data['position'])
+            }
+        } else if (data['operation_type'] === 'complete') {
+            playWinnerVictory(data['winner'])
         }
     }
 </script>
@@ -471,8 +486,25 @@
         {#console.log(eatenClass, "This Goat Eaten")#}
         $('.score').html(eatenScore)
         if (eatenScore >= maxNoOfGoatEatenToFinishGame) {
-            alert('Game Over, Tiger Won')
+            setTimeout(function () {
+                handleGameComplete('tiger')
+            }, 1000)
         }
+    }
+
+    function handleGameComplete(winner) {
+        if (winner.toUpperCase() === currentUserRole) {
+            let data = {
+                'operation_type': 'complete',
+                'winner': winner,
+            }
+            socket.send(JSON.stringify({data}))
+        }
+
+    }
+
+    function playWinnerVictory(winner) {
+        alert(winner.toUpperCase() + ' Won!')
     }
 
     function switchTurn() {
@@ -509,7 +541,6 @@
                 if (hasFilled.trim() === '') {
                     let ifGoatExist = $(p.food).find('.goat')
                     if (ifGoatExist.length) {
-                        console.log('Feed Position Counted')
                         availablePosition++
                     }
                 }
@@ -526,28 +557,31 @@
         boxClass = boxClass.split(' ')
         goatClass = goatClass.split(' ')
         position = '.' + boxClass[1] + ' .' + goatClass[1]
-        if (turn === 'goat') {
-            placeGoat(position)
-            let availableTigerPosition = checkIfTigerCornered()
-            console.log(availableTigerPosition)
-            if (availableTigerPosition === 0) {
-                setTimeout(function () {
-                    alert('Game Over! Goat Won')
-                }, 1000)
+        if (turn.toUpperCase() === currentUserRole) {
+            if (turn === 'goat') {
+                placeGoat(position)
+                let availableTigerPosition = checkIfTigerCornered()
+                console.log(availableTigerPosition)
+                if (availableTigerPosition === 0) {
+                    setTimeout(function () {
+                        handleGameComplete('goat')
+                    }, 1000)
+                }
+            } else if (turn === 'tiger') {
+                placeTiger(position)
             }
-        } else {
-            placeTiger(position)
+            console.log(position)
+            let data = {
+                'operation_type': 'movement',
+                'user_id': user_id,
+                'code': game_code,
+                'position': position,
+                'selected': turn === 'goat' ? globalSelectedTiger : globalSelectedGoat,
+                'turn': turn === 'goat' ? 'tiger' : 'goat'
+            }
+            socket.send(JSON.stringify({data}))
         }
-        console.log(position)
-        let data = {
-            'operation_type': 'movement',
-            'user_id': user_id,
-            'code': game_code,
-            'position': position,
-            'selected': turn === 'goat' ? globalSelectedTiger : globalSelectedGoat,
-            'turn': turn === 'goat' ? 'tiger' : 'goat'
-        }
-        socket.send(JSON.stringify({data}))
+
     })
 
     $(document).on('click', '.goat', function () {

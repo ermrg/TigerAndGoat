@@ -137,6 +137,7 @@
 </head>
 <body>
 <div class="home-wrapper">
+{{ RUNNING_IP }}
     <div class="info">
         <div class="title">
             <div class="second-line"> Code: {{ game.code }}</div>
@@ -188,7 +189,7 @@
     let game_code = '{{ game.code }}'
     let game = ''
     console.log('User Id', user_id, ' Creator Id', '{{ game.creator.id }}')
-    let socket = new WebSocket('ws://localhost:8000/ws/game-setup/' + game_code)
+    let socket = new WebSocket('ws://{{ RUNNING_IP }}/ws/game-setup/' + game_code)
     socket.onopen = function () {
         console.log('Socket Connected')
         let data = {
@@ -205,6 +206,7 @@
         if (data === 'start') {
             let url_ = '{% url 'multiplayer_online' '0123' '0321' %}'
             url_ = url_.replace('0123', game_code)
+            url_ = url_.replace('0321', user_id)
             window.location.replace(url_)
         } else {
             game = data

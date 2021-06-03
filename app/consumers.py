@@ -75,7 +75,6 @@ class PlayConsumer(WebsocketConsumer):
         self.accept()
 
     def receive(self, text_data=None, bytes_data=None):
-        print('received ', text_data)
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name, {
                 'type': 'movement',
@@ -83,11 +82,21 @@ class PlayConsumer(WebsocketConsumer):
             }
         )
 
+    def disconnect(self, code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
+
     def movement(self, event):
         data = event['payload']
         data = json.loads(data)
         data = data['data']
         if data['operation_type'] == 'movement':
+            self.send(text_data=json.dumps({
+                'payload': data
+            }))
+        elif data['operation_type'] == 'complete':
             self.send(text_data=json.dumps({
                 'payload': data
             }))
