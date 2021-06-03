@@ -356,7 +356,7 @@
                     switchTurn()
                 }
             } else {
-                console.log('Invalid Move 3')
+                {#console.log('Invalid Move 3')#}
             }
         } else {
             {# For initial $ tiger#}
@@ -395,11 +395,11 @@
                     $(positionClass).append(t)
                     switchTurn()
                 } else {
-                    console.log('Invalid Goat Move 1')
+                    {#console.log('Invalid Goat Move 1')#}
                 }
             }
         } else {
-            console.log('Invalid Goat Move 2')
+            {#console.log('Invalid Goat Move 2')#}
         }
 
     }
@@ -426,7 +426,7 @@
                         isFeeding = true
                         return true
                     } else {
-                        console.log("Invalid Move 1")
+                        {#console.log("Invalid Move 1")#}
                         return false
                     }
                 }
@@ -435,7 +435,7 @@
                 handleGoatEaten(eatenGoat)
                 return true
             } else {
-                console.log("Invalid Move 2")
+                {#console.log("Invalid Move 2")#}
                 return false
             }
         } else {
@@ -446,7 +446,7 @@
     function handleGoatEaten(eatenClass) {
         $(eatenClass).find('.goat').remove()
         eatenScore++
-        console.log(eatenClass, "This Goat Eaten")
+        {#console.log(eatenClass, "This Goat Eaten")#}
         $('.score').html(eatenScore)
         if (eatenScore >= maxNoOfGoatEatenToFinishGame) {
             alert('Game Over, Tiger Won')
@@ -486,7 +486,6 @@
                 let hasFilled = $(p.destination).html()
                 if (hasFilled.trim() === '') {
                     let ifGoatExist = $(p.food).find('.goat')
-                    console.log(ifGoatExist)
                     if (ifGoatExist.length) {
                         console.log('Feed Position Counted')
                         availablePosition++
@@ -507,8 +506,12 @@
         goatPosition = '.' + boxClass[1] + ' .' + goatClass[1]
         if (turn === 'goat') {
             placeGoat(goatPosition)
-            if (checkIfTigerCornered() === 0) {
-                alert('Game Over! Goat Won')
+            let availableTigerPosition = checkIfTigerCornered()
+            console.log(availableTigerPosition)
+            if (availableTigerPosition === 0) {
+                setTimeout(function () {
+                    alert('Game Over! Goat Won')
+                }, 1000)
             }
         } else {
             placeTiger(goatPosition)
