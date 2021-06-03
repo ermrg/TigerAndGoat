@@ -22,7 +22,7 @@ var availablePositions = {
         '.box14 .p1': ['.box13 .p1', '.box9 .p1', '.box10 .p1', '.box11 .p1', '.box3 .p1', '.box15 .p1', '.box15 .p4', '.box14 .p4', '.box13 .p4'],
         '.box15 .p1': ['.box14 .p1', '.box11 .p1', '.box16 .p1', '.box15 .p4'],
         '.box16 .p1': ['.box15 .p1', '.box11 .p1', '.box12 .p1', '.box12 .p2', '.box8 .p2', '.box16 .p2', '.box16 .p3', '.box16 .p4', '.box15 .p4'],
-        '.box16 .p2': ['.box16 .p4', '.box12 .p2', '.box16 .p3'],
+        '.box16 .p2': ['.box16 .p1', '.box12 .p2', '.box16 .p3'],
 
         '.box13 .p4': ['.box13 .p1', '.box14 .p1', '.box14 .p4'],
         '.box14 .p4': ['.box13 .p4', '.box14 .p1', '.box15 .p4'],

@@ -477,7 +477,7 @@
             let validPositions = LocalAvailablePositions[position]
             let feedingPositions = LocalFeedPositions[position]
             validPositions.map(function (p) {
-                let hasFilled = $(p).html().trim()
+                let hasFilled = $(p).html()
                 if (hasFilled === '') {
                     availablePosition++
                 }
