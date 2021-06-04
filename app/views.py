@@ -1,5 +1,6 @@
 import random
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -23,7 +24,7 @@ def join_online_game(request):
     return render(request, 'app/join_online_game.html')
 
 
-def invite_friends(request, code=None):
+def setup_game(request, code=None):
     if request.method == 'POST':
         data = request.POST
         ip = get_client_ip(request)
@@ -37,11 +38,20 @@ def invite_friends(request, code=None):
                 i = i + 1
             user.username = username
             user.first_name = data['name']
-        else:
-            user.first_name = data['name']
+        user.first_name = data['name']
         user.save()
+        user.profile.ip = ip
+        user.profile.save()
         if 'code' in data and data['code']:
             game = get_game_by_code(data['code'])
+            if game:
+                if game.opponent:
+                    messages.error(request, 'Room is full, Please create a new game')
+                    return redirect('create_online_game')
+            else:
+                messages.error(request, 'Room not found. Please make sure code is correct')
+                return redirect('join_online_game')
+
             return render(request, 'app/invite_friend.html', {'game': game, 'user_id': user.id})
         game = Game()
         game.creator = user
@@ -53,7 +63,6 @@ def invite_friends(request, code=None):
         game.code = code
         game.save()
         return render(request, 'app/invite_friend.html', {'game': game, 'user_id': user.id})
-    # Opponent
 
     return render(request, 'app/join_online_game.html', {'code': code})
 

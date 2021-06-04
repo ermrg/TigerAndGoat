@@ -24,6 +24,6 @@ urlpatterns = [
     path('multiplayer-online/<int:code>/<int:user_id>', multiplayer_online, name="multiplayer_online"),
     path('create-online-game', create_online_game, name="create_online_game"),
     path('join-online-game', join_online_game, name="join_online_game"),
-    path('game-setup', invite_friends, name="invite_friends"),
-    path('game-setup/<int:code>', invite_friends, name="invite_friends"),
+    path('game-setup', setup_game, name="setup_game"),
+    path('game-setup/<int:code>', setup_game, name="setup_game"),
 ]

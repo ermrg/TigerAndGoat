@@ -1,0 +1,24 @@
+<style>
+    ul{
+        padding: 0;
+    }
+    ul li{
+        list-style: none;
+    }
+    .messages{
+        position: absolute;
+        left: 0;
+        top: 0;
+        text-align: center;
+    }
+    .messages .error{
+        color: #ff4949;
+    }
+</style>
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}

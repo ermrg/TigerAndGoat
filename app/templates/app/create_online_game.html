@@ -31,6 +31,7 @@
             height: fit-content;
             overflow: hidden;
             padding-top: 30px;
+            position: relative;
         }
 
         .info {
@@ -84,10 +85,11 @@
 </head>
 <body>
 <div class="home-wrapper">
+    {% include 'app/layouts/message.html' %}
     <div class="info">
         <div class="title">
             <div class="second-line"> Your Name</div>
-            <form action="{% url 'invite_friends' %}" method="post">
+            <form action="{% url 'setup_game' %}" method="post">
                 {% csrf_token %}
                 <input name="name" type="text" value="Baadshaha">
                 <button class="create-game">Create New Game</button>
