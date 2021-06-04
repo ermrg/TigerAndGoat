@@ -19,10 +19,12 @@
         }
 
         .board-wrapper {
-            height: 100%;
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url("{% static 'app/images/background.jpg' %}");
+            background-size: cover;
         }
 
         .tag {
@@ -32,8 +34,7 @@
         .tiger {
             height: 35px;
             width: 35px;
-            background-color: orangered;
-            border-radius: 50%;
+        {#background-color: orangered;#} border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -43,8 +44,22 @@
             position: absolute;
         }
 
-        .tiger.selected, .goat.selected {
+        .tiger.selected img {
+            border-radius: 50%;
             box-shadow: 0px 0px 8px 4px #bbb;
+            background: #800000;
+            height: 70px;
+        }
+
+        .goat.selected img {
+            border-radius: 20%;
+            box-shadow: 0px 0px 8px 4px #bbb;
+            background: #f6c054;
+            height: 65px;
+        }
+
+        .tiger img {
+            height: 60px;
         }
 
         .goat {
@@ -62,12 +77,17 @@
             z-index: 1;
         }
 
+        .goat img {
+            height: 55px;
+        }
+
         .board {
             display: flex;
             height: 800px;
             width: 700px;
             margin: auto;
             flex-wrap: wrap;
+            background: #fff;
         }
 
         .score {
@@ -79,8 +99,8 @@
         }
 
         .goatTurn .box {
-            border-color: aquamarine;
-            background-color: #7fffd447 !important;
+            border-color: #1500ff;
+            background-color: #ffeb3b78 !important;
         }
 
         .tigerTurn .box {
@@ -95,20 +115,38 @@
             position: relative;
         }
 
-        .box:nth-child(1), .box:nth-child(3), .box:nth-child(6), .box:nth-child(8), .box:nth-child(9), .box:nth-child(14), .box:nth-child(11), .box:nth-child(16) {
+        .tigerTurn .box:nth-child(1), .tigerTurn .box:nth-child(3), .tigerTurn .box:nth-child(6), .tigerTurn .box:nth-child(8), .tigerTurn .box:nth-child(9), .tigerTurn .box:nth-child(14), .tigerTurn .box:nth-child(11), .tigerTurn .box:nth-child(16) {
             background: linear-gradient(to top right,
             rgba(0, 0, 0, 0) 0%,
             rgba(0, 0, 0, 0) calc(50% - 0.8px),
-            #bbb 50%,
+            red 50%,
             rgba(0, 0, 0, 0) calc(50% + 0.8px),
             rgba(0, 0, 0, 0) 100%);
         }
 
-        .box:nth-child(2), .box:nth-child(4), .box:nth-child(5), .box:nth-child(7), .box:nth-child(10), .box:nth-child(12), .box:nth-child(13), .box:nth-child(15) {
+        .goatTurn .box:nth-child(1), .goatTurn .box:nth-child(3), .goatTurn .box:nth-child(6), .goatTurn .box:nth-child(8), .goatTurn .box:nth-child(9), .goatTurn .box:nth-child(14), .goatTurn .box:nth-child(11), .goatTurn .box:nth-child(16) {
+            background: linear-gradient(to top right,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0) calc(50% - 0.8px),
+            #1500ff 50%,
+            rgba(0, 0, 0, 0) calc(50% + 0.8px),
+            rgba(0, 0, 0, 0) 100%);
+        }
+
+        .goatTurn .box:nth-child(2), .goatTurn .box:nth-child(4), .goatTurn .box:nth-child(5), .goatTurn .box:nth-child(7), .goatTurn .box:nth-child(10), .goatTurn .box:nth-child(12), .goatTurn .box:nth-child(13), .goatTurn .box:nth-child(15) {
             background: linear-gradient(to top left,
             rgba(0, 0, 0, 0) 0%,
             rgba(0, 0, 0, 0) calc(50% - 0.8px),
-            #bbb 50%,
+            #1500ff 50%,
+            rgba(0, 0, 0, 0) calc(50% + 0.8px),
+            rgba(0, 0, 0, 0) 100%);
+        }
+
+        .tigerTurn .box:nth-child(2), .tigerTurn .box:nth-child(4), .tigerTurn .box:nth-child(5), .tigerTurn .box:nth-child(7), .tigerTurn .box:nth-child(10), .tigerTurn .box:nth-child(12), .tigerTurn .box:nth-child(13), .tigerTurn .box:nth-child(15) {
+            background: linear-gradient(to top left,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0) calc(50% - 0.8px),
+            red 50%,
             rgba(0, 0, 0, 0) calc(50% + 0.8px),
             rgba(0, 0, 0, 0) 100%);
         }
@@ -116,12 +154,20 @@
         .box .p {
             height: 16px;
             width: 16px;
-            background-color: #bbb;
+            background-color: #000;
             border-radius: 50%;
             position: absolute;
             font-size: 11px;
             display: flex;
             justify-content: center;
+        }
+
+        .goatTurn .box .p {
+            background-color: #1500ff;
+        }
+
+        .tigerTurn .box .p {
+            background-color: red;
         }
 
         .box .p:hover {
@@ -165,7 +211,7 @@
     </style>
 </head>
 <body>
-<div class="score">Multiplayer Online</div>
+<div class="score"></div>
 <div class="board-wrapper">
     <div class="board goatTurn">
         <div class="box box1">
@@ -269,6 +315,45 @@
 
 </body>
 <script>
+    let user_id = '{{ user_id }}'
+    let currentUserRole = ''
+    let game_code = '{{ game.code }}'
+    let creator_id = '{{ game.creator_id }}'
+    let opponent_id = '{{ game.opponent_id }}'
+    let opponent_role = '{{ game.opponent_role }}'
+    let creator_role = '{{ game.creator_role }}'
+    if (user_id === creator_id) {
+        currentUserRole = creator_role
+    } else {
+        currentUserRole = opponent_role
+    }
+
+    let socket = new WebSocket('ws://{{ RUNNING_IP }}/ws/play/' + game_code)
+    socket.onmessage = function (e) {
+        let data = JSON.parse(e.data)
+        data = data['payload']
+        if (data['operation_type'] === 'movement') {
+                console.log(data)
+
+            if (data['selected']) {
+                if (!$(data['selected']).find('.' + data['turn']).hasClass('selected')) {
+                    $(data['selected']).find('.' + data['turn']).addClass('selected')
+                }
+            }
+            if (data['turn'] === 'tiger') {
+                placeTiger(data['position'])
+            } else {
+                placeGoat(data['position'])
+            }
+            {#if(turn !== data['turn']){#}
+                switchTurn()
+            {# }#}
+        } else if (data['operation_type'] === 'complete') {
+            playWinnerVictory(data['winner'])
+        }
+    }
+</script>
+<script>
     let turn = 'goat'
     let goatCount = 20
     let tigerCount = 4
@@ -276,6 +361,8 @@
     let maxNoOfGoatEatenToFinishGame = 5
     let LocalAvailablePositions = availablePositions.movePositon
     let LocalFeedPositions = availablePositions.feedPosition
+    let globalSelectedTiger = ''
+    let globalSelectedGoat = ''
     {#$(document).ready(function () {#}
     {#    let ps = $(document).find('.p')#}
     {#    ps.map(function () {#}
@@ -303,24 +390,25 @@
                 let ifAlreadyGoatExit = $(positionClass).find('.goat')
                 let ifAlreadyTigerExit = $(positionClass).find('.tiger')
                 if ($(ifAlreadyGoatExit).length + $(ifAlreadyTigerExit).length === 0) {
-                    let value = $(document).find('.tiger.selected').html()
+                    let value = $(document).find('.tiger.selected').attr('data-num')
                     $(document).find('.tiger.selected').remove()
-                    let t = `<div class="tiger tiger` + value + `">` + value + `</div>`
+                    let t = `<div class="tiger tiger` + value + `"><img src="{% static 'app/images/tiger.png' %}" /></div>`
                     $(positionClass).append(t)
-                    switchTurn()
+                    return true
                 }
             } else {
-                console.log('Invalid Move 3')
+                {#console.log('Invalid Move 3')#}
             }
         } else {
             {# For initial $ tiger#}
             if (tigerCount > 0) {
-                let t = `<div class="tiger tiger` + tigerCount + `">` + tigerCount + `</div>`
+                let t = `<div class="tiger tiger` + tigerCount + ` data-num="`+tigerCount+`"><img src="{% static 'app/images/tiger.png' %}" /></div>`
                 $(positionClass).append(t)
-                switchTurn()
                 tigerCount--
+                return true
             }
         }
+        return false
     }
 
     function placeGoat(positionClass) {
@@ -332,10 +420,10 @@
             if (selectedGoat.length === 0) {
                 if (goatCount > 0) {
                     let goatClass = 'goat goat' + goatCount
-                    let t = `<div class="${goatClass}">${goatCount}</div>`
+                    let t = `<div class="${goatClass}" data-num="`+goatCount+`"><img src="{% static 'app/images/goat.png' %}"/></div>`
                     $(positionClass).append(t)
-                    switchTurn()
                     goatCount--
+                    return true
                 }
             } else {
                 let selectedGoatClass = $(selectedGoat).closest('.p').attr('class')
@@ -343,19 +431,19 @@
                 selectedGoatClass = '.' + selectedGoatBoxClass.split(' ')[1] + ' .' + selectedGoatClass.split(' ')[1]
                 let availabilityCheck = checkAvailableGoatPosition(selectedGoatClass, positionClass)
                 if (availabilityCheck) {
-                    let value = $(document).find('.goat.selected').html()
+                    let value = $(document).find('.goat.selected').attr('data-num')
                     $(document).find('.goat.selected').remove()
-                    let t = `<div class="goat selected">${value}</div>`
+                    let t = `<div class="goat goat`+value+`"><img src="{% static 'app/images/goat.png' %}"/> </div>`
                     $(positionClass).append(t)
-                    switchTurn()
+                    return true
                 } else {
-                    console.log('Invalid Goat Move 1')
+                    {#console.log('Invalid Goat Move 1')#}
                 }
             }
         } else {
-            console.log('Invalid Goat Move 2')
+            {#console.log('Invalid Goat Move 2')#}
         }
-
+        return false
     }
 
     function checkAvailableGoatPosition(position, target) {
@@ -373,13 +461,14 @@
             let eatenGoat = ''
             feedingPositions.map(function (fp) {
                 if (fp.destination === target) {
+                    let chekDestination = $(fp.destination).html()
                     let goatExist = $(fp.food).find('.goat')
-                    if (goatExist.length) {
+                    if (goatExist.length && chekDestination === '') {
                         eatenGoat = fp.food
                         isFeeding = true
                         return true
                     } else {
-                        console.log("Invalid Move 1")
+                        {#console.log("Invalid Move 1")#}
                         return false
                     }
                 }
@@ -388,7 +477,7 @@
                 handleGoatEaten(eatenGoat)
                 return true
             } else {
-                console.log("Invalid Move 2")
+                {#console.log("Invalid Move 2")#}
                 return false
             }
         } else {
@@ -399,11 +488,28 @@
     function handleGoatEaten(eatenClass) {
         $(eatenClass).find('.goat').remove()
         eatenScore++
-        console.log(eatenClass, "This Goat Eaten")
+        {#console.log(eatenClass, "This Goat Eaten")#}
         $('.score').html(eatenScore)
         if (eatenScore >= maxNoOfGoatEatenToFinishGame) {
-            alert('Game Over, Tiger Won')
+            setTimeout(function () {
+                handleGameComplete('tiger')
+            }, 1000)
         }
+    }
+
+    function handleGameComplete(winner) {
+        if (winner.toUpperCase() === currentUserRole) {
+            let data = {
+                'operation_type': 'complete',
+                'winner': winner,
+            }
+            socket.send(JSON.stringify({data}))
+        }
+
+    }
+
+    function playWinnerVictory(winner) {
+        alert(winner.toUpperCase() + ' Won!')
     }
 
     function switchTurn() {
@@ -430,7 +536,7 @@
             let validPositions = LocalAvailablePositions[position]
             let feedingPositions = LocalFeedPositions[position]
             validPositions.map(function (p) {
-                let hasFilled = $(p).html().trim()
+                let hasFilled = $(p).html()
                 if (hasFilled === '') {
                     availablePosition++
                 }
@@ -439,9 +545,7 @@
                 let hasFilled = $(p.destination).html()
                 if (hasFilled.trim() === '') {
                     let ifGoatExist = $(p.food).find('.goat')
-                    console.log(ifGoatExist)
                     if (ifGoatExist.length) {
-                        console.log('Feed Position Counted')
                         availablePosition++
                     }
                 }
@@ -454,24 +558,56 @@
         let box = $(this).closest('.box').first()
         let boxClass = $(box).attr('class')
         let goatClass = $(this).attr('class')
-        let goatPosition = '';
+        let position = '';
         boxClass = boxClass.split(' ')
         goatClass = goatClass.split(' ')
-        goatPosition = '.' + boxClass[1] + ' .' + goatClass[1]
-        if (turn === 'goat') {
-            placeGoat(goatPosition)
-            if (checkIfTigerCornered() === 0) {
-                alert('Game Over! Goat Won')
+        position = '.' + boxClass[1] + ' .' + goatClass[1]
+        if (turn.toUpperCase() === currentUserRole) {
+            if (turn === 'goat') {
+                let success = placeGoat(position)
+                if (success) {
+                    sendMovement(position, 'goat', globalSelectedGoat)
+                    {#switchTurn()#}
+                    let availableTigerPosition = checkIfTigerCornered()
+                    if (availableTigerPosition === 0) {
+                        setTimeout(function () {
+                            handleGameComplete('goat')
+                        }, 1000)
+                    }
+                }
+
+            } else if (turn === 'tiger') {
+                let success = placeTiger(position)
+                if (success) {
+                    sendMovement(position, 'tiger', globalSelectedTiger)
+                    {#switchTurn()#}
+                }
             }
-        } else {
-            placeTiger(goatPosition)
         }
+
     })
+
+    function sendMovement(position, turn, selected) {
+        let data = {
+            'operation_type': 'movement',
+            'user_id': user_id,
+            'code': game_code,
+            'position': position,
+            'selected': selected,
+            'turn': turn
+        }
+        socket.send(JSON.stringify({data}))
+    }
 
     $(document).on('click', '.goat', function () {
         if (goatCount === 0 && turn === 'goat') {
             $('.goat').removeClass('selected')
+
             $(this).addClass('selected')
+            let selectedTiger = $(document).find('.goat.selected')
+            let selectedTigerClass = $(selectedTiger).closest('.p').attr('class')
+            let selectedTigerBoxClass = $(selectedTiger).closest('.box').attr('class')
+            globalSelectedGoat = '.' + selectedTigerBoxClass.split(' ')[1] + ' .' + selectedTigerClass.split(' ')[1]
         }
     })
 
@@ -479,7 +615,15 @@
         if (turn === 'tiger') {
             $('.tiger').removeClass('selected')
             $(this).addClass('selected')
+            let selectedTiger = $(document).find('.tiger.selected')
+            let selectedTigerClass = $(selectedTiger).closest('.p').attr('class')
+            let selectedTigerBoxClass = $(selectedTiger).closest('.box').attr('class')
+            globalSelectedTiger = '.' + selectedTigerBoxClass.split(' ')[1] + ' .' + selectedTigerClass.split(' ')[1]
+
         }
     })
+
+
 </script>
+
 </html>

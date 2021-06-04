@@ -90,8 +90,9 @@
             <div class="second-line"> Your Name</div>
             <form action="{% url 'setup_game' %}" method="post">
                 {% csrf_token %}
-                <input name="name" type="text" value="Baadshaha">
-                <button class="create-game">Create New Game</button>
+                <input name="name" type="text" value="Baadshaha" required>
+                <input name="code" type="text" placeholder="Code" value="{{ code }}" required>
+                <button class="create-game">Join Game</button>
             </form>
         </div>
     </div>
@@ -101,4 +102,5 @@
 
 </script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+
 </html>

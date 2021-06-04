@@ -1,0 +1,246 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        Board
+    </title>
+
+    <script src="{% static 'app/JQuery3.5.1.min.js' %}"></script>
+    <script src="{% static 'app/circleType.min.js' %}"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Luckiest Guy', cursive;
+            background-image: url("{% static 'app/images/background.jpg' %}");
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .home-wrapper {
+            height: fit-content;
+            overflow: hidden;
+            padding-top: 30px;
+        }
+
+        .info {
+            text-align: center;
+            width: 360px;
+        }
+
+        .title {
+
+            color: #FF9800;
+            position: relative;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .second-line {
+            letter-spacing: 7px;
+            margin-top: 22px;
+            font-size: 50px;
+            text-shadow: 2px 2px 2px #305cfa, 3px 3px 3px #ef961a;
+        }
+
+        .title input {
+            height: 50px;
+            border: 2px solid #FF9800;
+            padding: 10px;
+            color: #ef961a;
+            font-size: 26px;
+            margin-bottom: 10px;
+            outline: none;
+            border-radius: 40px;
+            text-align: center;
+            font-family: 'Luckiest Guy';
+        }
+
+        .title .start-match {
+        {#width: 150px;#} margin: auto;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-family: 'Luckiest Guy';
+            letter-spacing: 4px;
+            line-height: 33px;
+            border-color: #ef961a;
+            color: #ff6000;
+            outline: none;
+            background: #fffbd7;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .start-match {
+            display: none;
+        }
+
+        .friends, .waiting {
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #fff;
+            height: 100px;
+            border: 1px solid grey;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .friends {
+            display: none;
+        }
+
+        .switch {
+            position: absolute;
+            bottom: 10px;
+            text-align: center;
+            width: 100%;
+            left: 0;
+            cursor: pointer;
+        }
+
+        .friend .name .player {
+            color: darkslategrey;
+        }
+
+        .share {
+            padding: 20px;
+        }
+
+        .share p {
+            font-size: 12px;
+            color: darkslategrey;
+        }
+
+        .share-icons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .share-icon {
+            margin: 0px 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="home-wrapper">
+    <div class="info">
+        <div class="title">
+            <div class="second-line"> Code: {{ game.code }}</div>
+            <div class="links">
+                <div class="link">
+                    <a href="{% url 'setup_game' game.code %}">{{ RUNNING_IP }}{% url 'setup_game' game.code %}</a>
+                </div>
+                <div class="share">
+                    <p>Share Link Via</p>
+                    <div class="share-icons">
+                        <div class="share-icon"><i class="fab fa-facebook-f"></i></div>
+                        <div class="share-icon"><i class="fab fa-twitter"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="friends">
+                <div class="friend">
+                    <div class="thumbnail">
+
+                    </div>
+                    <div class="name-wrapper">
+                        <div class="name"><span class="player player1"> </span> <span class="first-player">You</span>
+                        </div>
+                        <div class="name"><span class="player player2"> </span> <span
+                                class="second-player"></span>
+                        </div>
+                    </div>
+
+                </div>
+                {% if game.creator.id == user_id %}
+                    <div class="switch"><i class="fas fa-random"></i> Switch</div>
+                {% endif %}
+
+            </div>
+            {% if game.creator.id == user_id %}
+                <button class="start-match" type="submit">Start</button>
+            {% endif %}
+            <div class="waiting">
+                <div class="friend">
+                    <div class="name"><span class="player">Waiting For Friend..</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form action="{% url 'multiplayer_online' %}" method="post" id="startGame">
+    {% csrf_token %}
+    <input type="hidden" name="user_id" value="{{ user_id }}">
+    <input type="hidden" name="game_code" value="{{ game.code }}">
+</form>
+</body>
+<script>
+    let user_id = '{{ user_id }}'
+    let game_code = '{{ game.code }}'
+    let game = ''
+    let socket = new WebSocket('ws://{{ RUNNING_IP }}/ws/game-setup/' + game_code)
+    socket.onopen = function () {
+        console.log('Socket Connected')
+        let data = {
+            'operation_type': 'join_user',
+            'user_id': user_id,
+            'code': game_code
+        }
+        console.log(data)
+        socket.send(JSON.stringify({data}))
+    }
+    socket.onmessage = function (e) {
+        let data = JSON.parse(e.data)
+        data = data['payload']
+        console.log(data)
+        if (data === 'start') {
+            console.log('Submit')
+            $('form#startGame').submit()
+        } else {
+            game = data
+            if (data['opponent_id']) {
+                $('.friends').show()
+                $('.start-match').show()
+                $('.waiting').hide()
+                if (data['opponent_id'] === user_id) {
+                    $('.player1').text(data['opponent_role'])
+                    $('.player2').text(data['creator_role'])
+                    $('.first-player').text("You")
+                    $('.second-player').text(data["creator_name"])
+                } else {
+                    $('.player1').text(data['creator_role'])
+                    $('.player2').text(data['opponent_role'])
+                    $('.second-player').text(data['opponent_name'])
+                    $('.first-player').text('You')
+                }
+            }
+        }
+
+    }
+    socket.onclose = function (e) {
+        console.log('Socket Closed')
+    }
+    $('.start-match').click(function (e) {
+        e.preventDefault()
+        let data = {
+            'operation_type': 'start',
+        }
+        socket.send(JSON.stringify({data}))
+    })
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+          integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+</html>
