@@ -25,3 +25,7 @@ def get_user_by_username(username):
 
 def get_game_by_code(code):
     return Game.objects.filter(code=code).first()
+
+
+def get_pending_game_by_user_id(user_id):
+    return Game.objects.filter(creator_id=user_id, has_started=0).first()

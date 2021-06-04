@@ -72,6 +72,9 @@ class PlayConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        game = get_game_by_code(code)
+        game.has_started = 1
+        game.save()
         self.accept()
 
     def receive(self, text_data=None, bytes_data=None):

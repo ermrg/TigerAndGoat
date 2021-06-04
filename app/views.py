@@ -6,7 +6,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.utils.text import slugify
 
-from app.helper import get_client_ip, get_user_by_ip, get_user_by_username, get_game_by_code
+from app.helper import get_client_ip, get_user_by_ip, get_user_by_username, get_game_by_code, \
+    get_pending_game_by_user_id
 from app.models import Game
 
 
@@ -45,21 +46,31 @@ def setup_game(request, code=None):
         if 'code' in data and data['code']:
             game = get_game_by_code(data['code'])
             if game:
-                if game.opponent:
+                if game.creator_id == user.id or game.opponent_id == user.id or not game.opponent_id:
+                    return render(request, 'app/invite_friend.html', {'game': game, 'user_id': user.id})
+
+                else:
                     messages.error(request, 'Room is full, Please create a new game')
                     return redirect('create_online_game')
+
             else:
                 messages.error(request, 'Room not found. Please make sure code is correct')
                 return redirect('join_online_game')
 
-            return render(request, 'app/invite_friend.html', {'game': game, 'user_id': user.id})
+        pending_game = get_pending_game_by_user_id(user.id)
+        if pending_game:
+            pending_game.opponent_id = None
+            pending_game.opponent_role = "GOAT"
+            pending_game.save()
+            return render(request, 'app/invite_friend.html', {'game': pending_game, 'user_id': user.id})
+
         game = Game()
         game.creator = user
         game.creator_role = 'TIGER'
         game.opponent_role = 'GOAT'
-        code = random.randint(1111, 9999)
+        code = random.randint(0000, 9999)
         while get_game_by_code(code):
-            code = random.randint(1111, 9999)
+            code = random.randint(0000, 9999)
         game.code = code
         game.save()
         return render(request, 'app/invite_friend.html', {'game': game, 'user_id': user.id})
@@ -67,9 +78,10 @@ def setup_game(request, code=None):
     return render(request, 'app/join_online_game.html', {'code': code})
 
 
-def multiplayer_online(request, code, user_id):
-    game = get_game_by_code(code)
-    return render(request, 'app/online_board.html', {'game': game, 'user_id': user_id})
+def multiplayer_online(request):
+    data = request.POST
+    game = get_game_by_code(data['game_code'])
+    return render(request, 'app/online_board.html', {'game': game, 'user_id': data['user_id']})
 
 
 def index(request):

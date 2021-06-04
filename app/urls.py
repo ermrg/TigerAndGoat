@@ -21,7 +21,7 @@ from app.views import *
 urlpatterns = [
     path('', index),
     path('multiplayer-offline', multiplayer_offline, name="multiplayer_offline"),
-    path('multiplayer-online/<int:code>/<int:user_id>', multiplayer_online, name="multiplayer_online"),
+    path('multiplayer-online', multiplayer_online, name="multiplayer_online"),
     path('create-online-game', create_online_game, name="create_online_game"),
     path('join-online-game', join_online_game, name="join_online_game"),
     path('game-setup', setup_game, name="setup_game"),
