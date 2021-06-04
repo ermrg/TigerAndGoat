@@ -1,17 +1,6 @@
+{% extends 'app/layouts/app.html' %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>
-        Board
-    </title>
-
-    <script src="{% static 'app/JQuery3.5.1.min.js' %}"></script>
-    <script src="{% static 'app/circleType.min.js' %}"></script>
+{% block content %}
     <style>
         body {
             margin: 0;
@@ -81,26 +70,24 @@
             cursor: pointer;
         }
     </style>
-</head>
-<body>
-<div class="home-wrapper">
-    {% include 'app/layouts/message.html' %}
-    <div class="info">
-        <div class="title">
-            <div class="second-line"> Your Name</div>
-            <form action="{% url 'setup_game' %}" method="post">
-                {% csrf_token %}
-                <input name="name" type="text" value="Baadshaha" required>
-                <input name="code" type="text" placeholder="Code" value="{{ code }}" required>
-                <button class="create-game">Join Game</button>
-            </form>
+    <div class="home-wrapper">
+        {% include 'app/layouts/message.html' %}
+        <div class="info">
+            <div class="title">
+                <div class="second-line"> Your Name</div>
+                <form action="{% url 'setup_game' %}" method="post">
+                    {% csrf_token %}
+                    <input name="name" type="text" value="Baadshaha" required>
+                    <input name="code" type="text" placeholder="Code" value="{{ code }}" required>
+                    <button class="create-game">Join Game</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-</body>
-<script>
 
-</script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+    <script>
 
-</html>
+    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
+
+{% endblock %}

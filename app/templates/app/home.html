@@ -1,17 +1,6 @@
+{% extends 'app/layouts/app.html' %}
 {% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>
-        Board
-    </title>
-
-    <script src="{% static 'app/JQuery3.5.1.min.js' %}"></script>
-    <script src="{% static 'app/circleType.min.js' %}"></script>
+{% block content %}
     <style>
         body {
             margin: 0;
@@ -21,7 +10,6 @@
             background-image: url("{% static 'app/images/background.jpg' %}");
             background-size: cover;
             display: flex;
-            align-items: center;
             justify-content: center;
             height: 100vh;
         }
@@ -29,7 +17,7 @@
         .home-wrapper {
             height: fit-content;
             overflow: hidden;
-            padding-top: 30px;
+            margin-top: 80px;
         }
 
         .info {
@@ -41,12 +29,12 @@
             height: 100px;
             width: 100px;
             position: absolute;
-            top: 65px;
-            left: 118px;
+            top: 60px;
+            left: 100px;
         }
 
         .title {
-            font-size: 50px;
+            font-size: 45px;
             color: #FF9800;
             position: relative;
             width: fit-content;
@@ -111,49 +99,36 @@
             visibility: visible;
         }
     </style>
-</head>
-<body>
-<div class="home-wrapper">
-    <div class="info">
-        <div class="title">
-            <div class="first-line" id="first-line"> BAAGCHAAL KO</div>
-            <img class="crown" src="{% static 'app/images/crown.png' %}" alt="Baag Chaal Ko Baadhshah"/>
 
-            <div class="second-line"> BAADSHAHA</div>
-        </div>
-        {#        <img src="{% static 'app/images/title-background.gif' %}" alt="Baag Chaal Ko Baadhshah"/>#}
-    </div>
-    <div class="option-wrapper">
-        <div class="menu">
-            <a href="{% url 'multiplayer_offline' %}">Multiplayer Offline</a>
-        </div>
+    <div class="home-wrapper">
+        <div class="info">
+            <div class="title">
+                <div class="first-line" id="first-line"> BAAGCHAAL KO</div>
+                <img class="crown" src="{% static 'app/images/crown.png' %}" alt="Baag Chaal Ko Baadhshah"/>
 
-        <div class="menu">
-            <a>Multiplayer OnLine</a>
-            <div class="sub-menu menu">
-                {#                <a>Random Opponent</a>#}
-                <a href="{% url 'create_online_game' %}">Challenge Your Friend</a>
-                <a href="{% url 'join_online_game' %}">Join Game</a>
+                <div class="second-line"> BAADSHAHA</div>
+            </div>
+            {#        <img src="{% static 'app/images/title-background.gif' %}" alt="Baag Chaal Ko Baadhshah"/>#}
+        </div>
+        <div class="option-wrapper">
+            <div class="menu">
+                <a href="{% url 'multiplayer_offline' %}">Multiplayer Offline</a>
+            </div>
+
+            <div class="menu">
+                <a>Multiplayer OnLine</a>
+                <div class="sub-menu menu">
+                    {#                <a>Random Opponent</a>#}
+                    <a href="{% url 'create_online_game' %}">Challenge Your Friend</a>
+                    <a href="{% url 'join_online_game' %}">Join Game</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-</body>
-<script>
-    const circleType = new CircleType(document.getElementById('first-line'));
-    circleType.radius(180).dir(1);
-</script>
-<script>
-    {#$('#joinGame').click(function () {#}
-    {#    var socket = new WebSocket('ws://localhost:8000/ws/move/')#}
-    {#    socket.onmessage = function (event) {#}
-    {#        var data = JSON.parse(event.data)#}
-    {#        console.log(data.message)#}
-    {#        $('#joinGame').html(data.message)#}
-    {#    }#}
-    {# })#}
 
-</script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Luckiest Guy">
-
-</html>
+    <script src="{% static 'app/circleType.min.js' %}"></script>
+    <script>
+        const circleType = new CircleType(document.getElementById('first-line'));
+        circleType.radius(180).dir(1);
+    </script>
+{% endblock %}
