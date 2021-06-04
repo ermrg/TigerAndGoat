@@ -3,6 +3,10 @@
 {% block content %}
     <script src="{% static 'app/availablePositions.js' %}"></script>
     <div class="score"></div>
+    <div class="navigation">
+        <a href="#" onclick="window.history.back()"> <i class="fas fa-arrow-left"></i> </a>
+        <a href="/"><i class="fas fa-home"></i></a>
+    </div>
     <div class="board-wrapper">
         <div class="board goatTurn">
             <div class="box box1">

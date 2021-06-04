@@ -41,8 +41,8 @@ def setup_game(request, code=None):
             user.first_name = data['name']
         user.first_name = data['name']
         user.save()
-        user.profile.ip = ip
-        user.profile.save()
+        # user.profile.ip = ip
+        # user.profile.save()
         if 'code' in data and data['code']:
             game = get_game_by_code(data['code'])
             if game:
